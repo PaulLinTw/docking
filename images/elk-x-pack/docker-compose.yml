@@ -1,0 +1,224 @@
+version: '3'
+
+services:
+  zk1:
+    restart: always
+    environment:
+     - ZKID=1
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/zookeeper:latest"
+    expose:
+     - "2181"
+     - "2888"
+     - "3888"
+    command: bash -c " echo 1 > var/zookeeper/myid && 3.4.11/bin/zkServer.sh start-foreground 3.4.11/conf/zookeeper.cfg"
+    tty: true
+  zk2:
+    depends_on:
+      - zk1
+    restart: always
+    environment:
+     - ZKID=2
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/zookeeper:latest"
+    tty: true
+    expose:
+     - "2181"
+     - "2888"
+     - "3888"
+    command: bash -c " echo 2 > var/zookeeper/myid && 3.4.11/bin/zkServer.sh start-foreground 3.4.11/conf/zookeeper.cfg"
+    tty: true
+  zk3:
+    depends_on:
+      - zk2
+    restart: always
+    environment:
+     - ZKID=3
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/zookeeper:latest"
+    tty: true
+    expose:
+     - "2181"
+     - "2888"
+     - "3888"
+    command: bash -c " echo 3 > var/zookeeper/myid && 3.4.11/bin/zkServer.sh start-foreground 3.4.11/conf/zookeeper.cfg"
+    tty: true
+  kafka1:
+    depends_on:
+      - zk3
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/kafka:latest"
+    tty: true
+    expose:
+     - "9092"
+     - "9041"
+     - "7071"
+    command: bash -c "sh restart_kafka.sh 1"
+    tty: true
+  kafka2:
+    depends_on:
+      - kafka1
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/kafka:latest"
+    tty: true
+    expose:
+     - "9092"
+     - "9041"
+     - "7071"
+    command: bash -c "sh restart_kafka.sh 2"
+  kafka3:
+    depends_on:
+      - kafka2
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/kafka:latest"
+    tty: true
+    expose:
+     - "9092"
+     - "9041"
+     - "7071"
+    command: bash -c "sh restart_kafka.sh 3"
+  redis1:
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/redis:latest"
+    expose:
+     - "6379"
+    command: bash -c "redis-server master.conf"
+  redis2:
+    depends_on:
+      - redis1
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/redis:latest"
+    expose:
+     - "6379"
+    command: bash -c "redis-server slave.conf"
+  km:
+    depends_on:
+      - kafka3
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/km:latest"
+    tty: true
+    ports:
+     - "8080:8080"
+    command: bash -c "sh restart_km.sh"
+  prometheus:
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/prometheus:latest"
+    tty: true
+    expose:
+     - "9090"
+    command: bash -c "./prometheus --config.file=prometheus.yml"
+  grafana:
+    restart: always
+    image: "grafana/grafana:latest"
+    ports:
+     - "3000:3000"
+  reporter:
+    depends_on:
+      - redis2
+      - kafka3
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/ap:latest"
+    tty: true
+    ports:
+     - "5000:5000"
+    command: bash -c "python report.py 5000"
+  act_proc1:
+    depends_on:
+      - reporter
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/ap:latest"
+    tty: true
+    command: bash -c "python process_activity.py"
+  rec_proc1:
+    depends_on:
+      - reporter
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/ap:latest"
+    tty: true
+    command: bash -c "python process_record.py"
+  act_proc2:
+    depends_on:
+      - reporter
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/ap:latest"
+    tty: true
+    command: bash -c "python process_activity.py"
+  rec_proc2:
+    depends_on:
+      - reporter
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/ap:latest"
+    tty: true
+    command: bash -c "python process_record.py"
+  act_proc3:
+    depends_on:
+      - reporter
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/ap:latest"
+    tty: true
+    command: bash -c "python process_activity.py"
+  rec_proc3:
+    depends_on:
+      - reporter
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/ap:latest"
+    tty: true
+    command: bash -c "python process_record.py"
+  act_proc4:
+    depends_on:
+      - reporter
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/ap:latest"
+    tty: true
+    command: bash -c "python process_activity.py"
+  rec_proc4:
+    depends_on:
+      - reporter
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/ap:latest"
+    tty: true
+    command: bash -c "python process_record.py"
+  act_sim:
+    depends_on:
+      - act_proc1
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/ap:latest"
+    tty: true
+    command: bash -c "python simulate_activity.py"
+  rec_sim:
+    depends_on:
+      - rec_proc1
+    restart: always
+    image: "btgit.eastasia.cloudapp.azure.com:5000/demo/ap:latest"
+    tty: true
+    command: bash -c "python simulate_record.py"
+
+  elasticsearch:
+    image: "192.168.1.101:5050/dockerelkxpack_elasticsearch:latest"
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: changeme
+
+  logstash:
+    build:
+      context: logstash/
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5000:5000"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: "192.168.1.101:5050/dockerelkxpack_kibana:latest"
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
