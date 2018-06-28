@@ -1,0 +1,186 @@
+{% extends "base_site.html" %}
+
+{% block title %}國家視角{% endblock title %}
+
+{% block stylesheets %}
+  {{ super() }}
+{% endblock stylesheets %}
+
+{% block content %}
+<script>
+function set_algorithm(y) {
+    var x = document.getElementById("main");
+    x.algorithm.value=y;
+}
+function set_hourrange(y) {
+    var x = document.getElementById("main");
+    x.hourrange.value=y;
+}
+</script>
+  <div class="right_col" role="main">
+    <div class="">
+		<div class="page-title">
+        <div class="title_left">
+          <h3>{{ country }} 國家視角</h3>
+        </div>
+        <div class="title_right">
+			<form id="main" class="form-horizontal form-label-left" action="/countries/index" method="get">
+				<input type="hidden" name="country" value="{{ country }}" >
+				<input type="hidden" name="algorithm" value="{{ prediction.algorithm }}" >
+				<input type="hidden" name="hourrange" value="{{ hourrange }}" >
+				<label class="control-label col-md-2 col-sm-2 col-xs-12">Product</label>
+				<div class="col-md-3 col-sm-3 col-xs-12">
+					<select class="form-control" name='product'>
+	{% for prd in products %}
+					  <option value="{{ prd }}" {% if prd==product %}selected{% endif %}>{{ prd }}</option>
+	{% endfor %}
+					</select>
+              </div>
+				<label class="control-label col-md-2 col-sm-2 col-xs-12">Activity</label>
+				<div class="col-md-3 col-sm-3 col-xs-12">
+					<select class="form-control" name='action'>
+	{% for act in visits %}
+					  <option value="{{ act }}" {% if act==action %}selected{% endif %}>{{ act }}</option>
+	{% endfor %}
+	{% for act in actions %}
+					  <option value="{{ act }}" {% if act==action %}selected{% endif %}>{{ act }}</option>
+	{% endfor %}
+					</select>
+              </div>
+				<div class="col-md-1 col-sm-1 col-xs-12">
+	            <button class="btn btn-default" type="submit">Go!</button>
+          		</div>
+           </div>
+			</form>
+		</div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+		        <div class="col-md-9" >
+                 <h3>{{ prediction.title|safe }}<br><small>{{ prediction.timerange }}, 演算法:{{ prediction.algorithm }}, 前15分鐘平均誤差 {{ prediction.rmse15|safe }}</small></h3>
+		        </div>
+		        <div class="col-md-3">
+			      <ul class="nav navbar-right panel_toolbox">
+			        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+			        </li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+						<ul class="dropdown-menu" role="menu">
+							<li onmousedown="set_algorithm('TREE');">algorithm: TREE</li>
+							<li onmousedown="set_algorithm('MLP');">algorithm: MLP</li>
+							<li onmousedown="set_algorithm('LSTM');">algorithm: LSTM</li>
+							<li onmousedown="set_algorithm('LSTM_Seq_To_One');">algorithm: LSTM_Seq_To_One</li>
+						</ul>
+					</li>
+			        <li><a class="close-link"><i class="fa fa-close"></i></a>
+			        </li>
+			      </ul>
+		        </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content" >
+
+              <div class="row" style="border-bottom: 1px solid #E0E0E0; padding-bottom: 5px; margin-bottom: 5px;">
+                {{ prediction.image|safe }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+		        <div class="col-md-9" >
+                 <h3>{{ ranking.title|safe }}<br><small>{{ ranking.time_range|safe }}, slice:{{ hourrange }}</small></h3>
+		        </div>
+		        <div class="col-md-3">
+			      <ul class="nav navbar-right panel_toolbox">
+			        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+			        </li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+						<ul class="dropdown-menu" role="menu">
+							<li onmousedown="set_hourrange('60');">slice: 1 hour</li>
+							<li onmousedown="set_hourrange('1440');">slice: 1 day</li>
+						</ul>
+					</li>
+			        <li><a class="close-link"><i class="fa fa-close"></i></a>
+			        </li>
+			      </ul>
+		        </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content" >
+
+              <div class="row" style="border-bottom: 1px solid #E0E0E0; padding-bottom: 5px; margin-bottom: 5px;">
+                <div class="col-md-12" >
+                  {{ ranking.pie|safe }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+		        <div class="col-md-9" >
+                 <h3>產品之活動關聯<br><small>{{ relations.timerange|safe }}</small></h3>
+		        </div>
+		        <div class="col-md-3">
+			      <ul class="nav navbar-right panel_toolbox">
+			        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+			        </li>
+			        <li><a class="close-link"><i class="fa fa-close"></i></a>
+			        </li>
+			      </ul>
+		        </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content" >
+
+              <div class="row" style="border-bottom: 1px solid #E0E0E0; padding-bottom: 5px; margin-bottom: 5px;">
+                <div class="col-md-12" >
+                  <h4>{{ relations.relation|safe }}</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ super()}}
+  <!-- Chart.js -->
+  <script src="{{ url_for('static', filename='vendors/Chart.js/dist/Chart.min.js') }}"></script>
+  <!-- gauge.js -->
+  <script src="{{ url_for('static', filename='vendors/gauge.js/dist/gauge.min.js') }}"></script>
+  <!-- Skycons -->
+  <script src="{{ url_for('static', filename='vendors/skycons/skycons.js') }}"></script>
+  <!-- Flot -->
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.pie.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.time.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.stack.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.resize.js') }}"></script>
+  <!-- Flot plugins -->
+  <script src="{{ url_for('static', filename='vendors/flot.orderbars/js/jquery.flot.orderBars.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/flot-spline/js/jquery.flot.spline.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/flot.curvedlines/curvedLines.js') }}"></script>
+  <!-- DateJS -->
+  <script src="{{ url_for('static', filename='vendors/DateJS/build/date.js') }}"></script>
+  <!-- JQVMap -->
+  <script src="{{ url_for('static', filename='vendors/jqvmap/dist/jquery.vmap.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/jqvmap/dist/maps/jquery.vmap.world.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/jqvmap/examples/js/jquery.vmap.sampledata.js') }}"></script>
+{% endblock javascripts %}

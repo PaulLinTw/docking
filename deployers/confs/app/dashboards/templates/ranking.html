@@ -1,0 +1,98 @@
+{% extends "base_site.html" %}
+
+{% block title %}實時統計{% endblock title %}
+
+{% block stylesheets %}
+  {{ super() }}
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+		<div class="page-title">
+			<div class="col-md-12">
+				<h3>{{ axis_outer }}對{{ axis_inner }}的交叉分析<br><small>{{ ranking.time_range }}</small></h3>
+			</div>
+    		<div class="col-md-12">
+					<label class="control-label col-md-3 col-sm-3 col-xs-12">外部選擇</label>
+					<label class="control-label col-md-3 col-sm-3 col-xs-12">內部選擇</label>
+					<label class="control-label col-md-3 col-sm-3 col-xs-12">時段</label>
+			</div>
+        	<div class="col-md-12">
+				<form id="main" class="form-horizontal form-label-left" action="/dashboards/ranking" method="get">
+					<div class="col-md-3 col-sm-3 col-xs-12">
+						<select class="form-control" name='axis_outer'>
+						  <option value="product" {% if axis_outer=="product" %}selected{% endif %}>產品</option>
+						  <option value="action"  {% if axis_outer=="action"  %}selected{% endif %}>活動</option>
+						  <option value="country" {% if axis_outer=="country" %}selected{% endif %}>國家</option>
+						  <option value="site"    {% if axis_outer=="site"    %}selected{% endif %}>據點</option>
+						</select>
+		          </div>
+					<div class="col-md-3 col-sm-3 col-xs-12">
+						<select class="form-control" name='axis_inner'>
+						  <option value="product" {% if axis_inner=="product" %}selected{% endif %}>產品</option>
+						  <option value="action"  {% if axis_inner=="action"  %}selected{% endif %}>活動</option>
+						  <option value="country" {% if axis_inner=="country" %}selected{% endif %}>國家</option>
+						  <option value="site"    {% if axis_inner=="site"    %}selected{% endif %}>據點</option>
+						</select>
+		          </div>
+					<div class="col-md-3 col-sm-3 col-xs-12">
+						<select class="form-control" name='hourrange'>
+						  <option value="60"  {% if hourrange=="60"   %}selected{% endif %}>最近一小時</option>
+						  <option value="720" {% if hourrange=="720"  %}selected{% endif %}>最近十二小時</option>
+						  <option value="1440"{% if hourrange=="1440" %}selected{% endif %}>最近一天</option>
+						</select>
+		          </div>
+					<div class="col-md-1 col-sm-1 col-xs-12">
+			        <button class="btn btn-default" type="submit">Go!</button>
+		      		</div>
+		       </div>
+				</form>
+
+			</div>
+		</div>
+
+      <div class="row">
+        <div class="col-md-12">
+			<div class="row" style="border-bottom: 1px solid #E0E0E0; padding-bottom: 5px; margin-bottom: 5px;">
+				<div class="col-md-12" >
+				  {{ ranking.bar|safe }}
+				</div>
+			</div>
+			<div class="row" style="border-bottom: 1px solid #E0E0E0; padding-bottom: 5px; margin-bottom: 5px;">
+				<div class="col-md-12">
+				  {{ ranking.pie|safe }}
+				</div>
+			</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ super()}}
+  <!-- Chart.js -->
+  <script src="{{ url_for('static', filename='vendors/Chart.js/dist/Chart.min.js') }}"></script>
+  <!-- gauge.js -->
+  <script src="{{ url_for('static', filename='vendors/gauge.js/dist/gauge.min.js') }}"></script>
+  <!-- Skycons -->
+  <script src="{{ url_for('static', filename='vendors/skycons/skycons.js') }}"></script>
+  <!-- Flot -->
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.pie.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.time.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.stack.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.resize.js') }}"></script>
+  <!-- Flot plugins -->
+  <script src="{{ url_for('static', filename='vendors/flot.orderbars/js/jquery.flot.orderBars.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/flot-spline/js/jquery.flot.spline.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/flot.curvedlines/curvedLines.js') }}"></script>
+  <!-- DateJS -->
+  <script src="{{ url_for('static', filename='vendors/DateJS/build/date.js') }}"></script>
+  <!-- JQVMap -->
+  <script src="{{ url_for('static', filename='vendors/jqvmap/dist/jquery.vmap.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/jqvmap/dist/maps/jquery.vmap.world.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/jqvmap/examples/js/jquery.vmap.sampledata.js') }}"></script>
+{% endblock javascripts %}

@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "name": "demo",
+  "type": "email",
+  "isDefault": true,
+  "settings": {
+    "addresses": "paullin@bluetechnology.com.tw",
+    "autoResolve": true,
+    "httpMethod": "POST",
+    "uploadImage": true
+  }
+}
