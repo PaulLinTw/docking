@@ -2,7 +2,7 @@ source ./0_common_conf.sh
 
 eval $(docker-machine env $Master_Host)
 
-docker exec mongos bash -c "sh initiate_db.sh"
+#docker exec mongos bash -c "sh initiate_db.sh"
 
 sleep 3
 dqt='"'

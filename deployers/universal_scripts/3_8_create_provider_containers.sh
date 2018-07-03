@@ -1,6 +1,6 @@
 source ./0_common_conf.sh
 
-eval $(docker-machine env $Worker1_Host)
+eval $(docker-machine env $Worker4_Host)
 
 echo "create act_sim_China container"
 docker run -d --net=$overlay --name=act_sim_China \
@@ -22,8 +22,6 @@ docker run -d --net=$overlay --name=act_sim_Indonesia \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
 $registry/demo/ap:latest 	bash -c "python simulate_activity.py Indonesia"
 
-eval $(docker-machine env $Worker2_Host)
-
 echo "create act_sim_Japan container"
 docker run -d --net=$overlay --name=act_sim_Japan \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
@@ -44,8 +42,6 @@ docker run -d --net=$overlay --name=act_sim_Germany \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
 $registry/demo/ap:latest 	bash -c "python simulate_activity.py Germany"
 
-eval $(docker-machine env $Worker3_Host)
-
 echo "create act_sim_Russia container"
 docker run -d --net=$overlay --name=act_sim_Russia \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
@@ -56,6 +52,8 @@ docker run -d --net=$overlay --name=act_sim_Mexico \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
 $registry/demo/ap:latest 	bash -c "python simulate_activity.py Mexico"
 
+eval $(docker-machine env $Worker5_Host)
+
 echo "create rec_sim_China container"
 docker run -d --net=$overlay --name=rec_sim_China \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
@@ -65,8 +63,6 @@ echo "create rec_sim_India container"
 docker run -d --net=$overlay --name=rec_sim_India \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
 $registry/demo/ap:latest 	bash -c "python simulate_record.py India"
-
-eval $(docker-machine env $Worker1_Host)
 
 echo "create rec_sim_USA container"
 docker run -d --net=$overlay --name=rec_sim_USA \
@@ -83,8 +79,6 @@ docker run -d --net=$overlay --name=rec_sim_Japan \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
 $registry/demo/ap:latest 	bash -c "python simulate_record.py Japan"
 
-eval $(docker-machine env $Worker2_Host)
-
 echo "create rec_sim_UK container"
 docker run -d --net=$overlay --name=rec_sim_UK \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
@@ -99,8 +93,6 @@ echo "create rec_sim_Germany container"
 docker run -d --net=$overlay --name=rec_sim_Germany \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
 $registry/demo/ap:latest 	bash -c "python simulate_record.py Germany"
-
-eval $(docker-machine env $Worker3_Host)
 
 echo "create rec_sim_Russia container"
 docker run -d --net=$overlay --name=rec_sim_Russia \

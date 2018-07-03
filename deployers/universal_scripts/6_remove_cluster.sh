@@ -5,3 +5,5 @@ docker-machine -D rm $Master_Host   -f
 docker-machine -D rm $Worker1_Host  -f
 docker-machine -D rm $Worker2_Host  -f
 docker-machine -D rm $Worker3_Host  -f
+docker-machine -D rm $Worker4_Host  -f
+docker-machine -D rm $Worker5_Host  -f

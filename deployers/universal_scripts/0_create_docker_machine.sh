@@ -6,7 +6,7 @@ create_kv() {
 	else
 		ip=$1
 		ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@${ip}
-		Option="--generic-ip-address ${ip} ${Option}"
+		Options="--generic-ip-address ${ip} ${Options}"
 	fi
 	docker-machine $debug create --driver $DRIVER_NAME \
 		$Options \
@@ -26,7 +26,7 @@ create_master() {
 	else
 		ip=$1
 		ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@${ip}
-		Option="--generic-ip-address ${ip} ${Option}"
+		Options="--generic-ip-address ${ip} ${Options}"
 	fi
 
 	kvip=$(docker-machine ip $KVStore_Host)
@@ -49,13 +49,13 @@ create_worker(){
 	else
 		ip=$2
 		ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@${ip}
-		Option="--generic-ip-address ${ip} ${Option}"
+		Options="--generic-ip-address ${ip} ${Options}"
 	fi
 
 	kvip=$(docker-machine ip $KVStore_Host)
 
 	docker-machine $debug create --driver $DRIVER_NAME \
-		$Option \
+		$Options \
 		--swarm \
 		--swarm-discovery="consul://${kvip}:8500" \
 		--engine-insecure-registry $registry \

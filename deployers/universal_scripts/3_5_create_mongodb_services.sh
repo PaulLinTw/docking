@@ -124,18 +124,20 @@ docker exec mongos mongo mongos:40000/admin --eval "db.runCommand({addshard:'sh_
 
 sleep 10
 
-eval $(docker-machine env $Master_Host)
 echo "create exporter1 container"
+eval $(docker-machine env $Worker1_Host)
 docker run -d --net=$overlay --name=exporter1 --expose 9001 \
 $registry/demo/mongoexporter:latest \
 mongodb_exporter -mongodb.uri=mongodb://mongo_primary1:20000/admin -groups.enabled= "op_counters,op_counters_repl,asserts,durability,background_flushing, connections,global_lock,index_counters,network,memory,locks,metrics"
 
 echo "create exporter2 container"
+eval $(docker-machine env $Worker2_Host)
 docker run -d --net=$overlay --name=exporter2 --expose 9001 \
 $registry/demo/mongoexporter:latest \
 mongodb_exporter -mongodb.uri=mongodb://mongo_primary2:20000/admin -groups.enabled= "op_counters,op_counters_repl,asserts,durability,background_flushing, connections,global_lock,index_counters,network,memory,locks,metrics"
 
 echo "create exporter3 container"
+eval $(docker-machine env $Worker3_Host)
 docker run -d --net=$overlay --name=exporter3 --expose 9001 \
 $registry/demo/mongoexporter:latest \
 mongodb_exporter -mongodb.uri=mongodb://mongo_primary3:20000/admin -groups.enabled= "op_counters,op_counters_repl,asserts,durability,background_flushing, connections,global_lock,index_counters,network,memory,locks,metrics"
