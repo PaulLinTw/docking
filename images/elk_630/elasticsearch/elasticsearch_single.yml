@@ -9,23 +9,8 @@ network.host: 0.0.0.0
 # set to 1 to allow single node clusters
 # Details: https://github.com/elastic/elasticsearch/pull/17288
 discovery.zen.minimum_master_nodes: 1
-network.host: 0.0.0.0
-xpack.security.enabled: true
 
 ## Use single node discovery in order to disable production mode and avoid bootstrap checks
-
 ## see https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
 #
 discovery.type: single-node
-
-xpack.notification.email.account:
-    gmail_account:
-        profile: gmail
-        smtp:
-            auth: true
-            starttls.enable: true
-            host: smtp.gmail.com
-            port: 587
-            user: paoshui@gmail.com
-            password: rilljetfsxrdbmeh
-
