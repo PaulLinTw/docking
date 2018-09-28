@@ -1,0 +1,138 @@
+input {
+  http_poller {
+	urls => {
+		health => {
+			method => get
+			user => "elastic"
+			password => "changeme"
+			url => "http://192.168.1.207:9200/_nodes/stats?pretty"
+			headers => {
+				Accept => "application/json"
+			}
+		}
+	}
+	request_timeout => 60
+	schedule => { "every" => "30s" }
+	codec => "json"
+	type => "esnodes"
+  }
+  file {
+  	path => "/var/log/elasticsearch/gc.log.*.current"
+	codec => multiline { 
+		pattern => "^[0-9]{4}-[0-9]{2}-[0-9]{2}T"
+		negate => true
+		what => "previous"
+	}
+	type => "esgc"
+  }
+#  file {
+#  	path => "/home/vagrant/logstash_1/logs/logstash-plain.log"
+#	type => "lg"
+#  }
+#	tcp {
+#		port => 5400
+#	}
+#    kafka {
+#        auto_offset_reset => "earliest"
+#        group_id => "elk"
+#        bootstrap_servers => "192.168.1.206:9092"
+#        topics => [ "log" ]
+#    }
+}
+filter {
+  if [type] == "esgc" {
+	mutate {
+		gsub => ["message", "\n", ""]
+	}
+	grok {
+		patterns_dir => ["/home/vagrant/share/patterns"]
+		match => { 
+		    "message" => '^%{content:DATETIME}: %{content:NUMBER}: %{content:DATA}$'
+		}
+	}
+  }
+#  if [type] == "lg" {
+#	grok {
+#		patterns_dir => ["/home/vagrant/share/patterns"]
+#		match => {
+#		    "message" => '^\[%{content:DATETIME}\]\[%{content:LEVEL}\]\[%{content:CLASS}\]$'
+#		}
+#	}
+#  }
+  if [type] == "esnodes" {
+	mutate {
+		add_field => { "filetime" => "%{@timestamp}" }
+	}  
+  }
+  else {
+	mutate {
+		add_field => { "filetime" => "%{DATETIME}" }
+	}
+  }
+	mutate {
+		gsub => ["filetime", "[A-Za-z]", " ",
+			 "filetime", ":[0-9]{2}\..*", ":00"]
+	}  
+	grok {
+		match => { 
+		    "filetime" => ':%{NUMBER:minute:int}:00'
+		}
+	}
+	ruby{
+		code => "event.set('minute', 5*(event.get('minute')/5)+5 )"
+	}
+	grok {
+		match => {"filetime" =>'(?<TIMET_hour>.* [0-9]{2})'}	 
+	}
+	mutate {
+		replace => { "filetime" => "%{TIMET_hour}:%{minute}:00" }
+		gsub => ["filetime", ":([0-9]):", ":0\1:"]
+	}
+	mutate {
+		gsub => ["filetime", ":", ""]
+		update => { "filetime" => "%{filetime} GMT" }
+	}
+  if [type] == "esnodes" {
+	mutate {
+		remove_field => [ "@timestamp", "TIMET_hour", "minute"]
+	}
+  }
+  else {
+	mutate {
+		remove_field => [ "message","@timestamp","@version","TIMET_hour", "minute", "path", "host" ]
+	}
+  }
+}
+## Add your filters / logstash plugins configuration here
+
+output {
+  if [type] == "esgc" {
+	webhdfs {
+		host => "hdmaster1"
+		codec => "json"
+		port => 9870
+		user => "vagrant"
+		path => "es/gc/%{filetime}"
+	}
+  }
+  if [type] == "esnodes" {
+	webhdfs {
+		host => "hdmaster1"
+		codec => "json"
+		port => 9870
+		user => "vagrant"
+		path => "es/nodes/%{filetime}"
+	}
+  }
+#	elasticsearch {
+#		hosts => "192.168.1.206:9200"
+#		index => "dev_log_2-%{+YYYY.MM.dd}"
+#		user => elastic
+#		password => changeme
+#	}
+#  if [type] == "es_nodes" {
+#	stdout { 
+#		codec => rubydebug
+# 	} 
+#  }
+}

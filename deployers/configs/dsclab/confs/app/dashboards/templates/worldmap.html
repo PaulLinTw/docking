@@ -1,0 +1,92 @@
+{% extends "base_site.html" %}
+
+{% block title %}實時地圖{% endblock title %}
+
+{% block stylesheets %}
+  {{ super() }}
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+		<div class="page-title">
+			<div class="col-md-12">
+				<h3>全球網站活動與交易即時分佈圖<br><small>{{ worldmap.time_range }}</small></h3>
+			</div>
+    		<div class="col-md-12">
+					<label class="control-label col-md-3 col-sm-3 col-xs-12">Product</label>
+					<label class="control-label col-md-3 col-sm-3 col-xs-12">Activity</label>
+					<label class="control-label col-md-3 col-sm-3 col-xs-12">slice</label>
+			</div>
+        	<div class="col-md-12">
+				<form class="form-horizontal form-label-left" action="/dashboards/worldmap" method="get">
+					<div class="col-md-3 col-sm-3 col-xs-12">
+						<select class="form-control" name='product'>
+		{% for prd in products %}
+						  <option value="{{ prd }}" {% if prd==product %}selected{% endif %}>{{ prd }}</option>
+		{% endfor %}
+						</select>
+		          </div>
+					<div class="col-md-3 col-sm-3 col-xs-12">
+						<select class="form-control" name='action'>
+		{% for act in visits %}
+						  <option value="{{ act }}" {% if act==action %}selected{% endif %}>{{ act }}</option>
+		{% endfor %}
+		{% for act in actions %}
+						  <option value="{{ act }}" {% if act==action %}selected{% endif %}>{{ act }}</option>
+		{% endfor %}
+						</select>
+		          </div>
+					<div class="col-md-3 col-sm-3 col-xs-12">
+						<select class="form-control" name='hourrange'>
+						  <option value="60"  {% if hourrange=="60"   %}selected{% endif %}>最近一小時</option>
+						  <option value="720" {% if hourrange=="720"  %}selected{% endif %}>最近十二小時</option>
+						  <option value="1440"{% if hourrange=="1440" %}selected{% endif %}>最近一天</option>
+						</select>
+		          </div>
+					<div class="col-md-1 col-sm-1 col-xs-12">
+			        <button class="btn btn-default" type="submit">Go!</button>
+		      		</div>
+		       </div>
+				</form>
+			</div>
+		</div>
+
+      <div class="row">
+        <div class="col-md-12">
+			<br>
+			<br>
+          {{ worldmap.worldmap_div|safe }}
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ super()}}
+  <!-- Chart.js -->
+  <script src="{{ url_for('static', filename='vendors/Chart.js/dist/Chart.min.js') }}"></script>
+  <!-- gauge.js -->
+  <script src="{{ url_for('static', filename='vendors/gauge.js/dist/gauge.min.js') }}"></script>
+  <!-- Skycons -->
+  <script src="{{ url_for('static', filename='vendors/skycons/skycons.js') }}"></script>
+  <!-- Flot -->
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.pie.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.time.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.stack.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.resize.js') }}"></script>
+  <!-- Flot plugins -->
+  <script src="{{ url_for('static', filename='vendors/flot.orderbars/js/jquery.flot.orderBars.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/flot-spline/js/jquery.flot.spline.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/flot.curvedlines/curvedLines.js') }}"></script>
+  <!-- DateJS -->
+  <script src="{{ url_for('static', filename='vendors/DateJS/build/date.js') }}"></script>
+  <!-- JQVMap -->
+  <script src="{{ url_for('static', filename='vendors/jqvmap/dist/jquery.vmap.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/jqvmap/dist/maps/jquery.vmap.world.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/jqvmap/examples/js/jquery.vmap.sampledata.js') }}"></script>
+{% endblock javascripts %}

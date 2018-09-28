@@ -3,10 +3,17 @@ create_kv() {
 
 	if [ "$deploy_type" == "azure" ]; then
 		export AZURE_SIZE="Standard_A0"
-	else
+	elif [ "$deploy_type" == "gcp" ]; then
+		export GCP_SIZE="Standard_A0"
+	elif [ "$deploy_type" == "aws" ]; then
+		export AWS_SIZE="Standard_A0"
+	elif [ "$deploy_type" == "generic" ]; then
 		ip=$1
-		ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@${ip}
+		ssh-copy-id -f -i ~/.ssh/id_rsa.pub $user@${ip}
 		Options="--generic-ip-address ${ip} ${Options}"
+	else
+		echo "Invalid deploy_type \"$deploy_type\"."
+		exit 1
 	fi
 	docker-machine $debug create --driver $DRIVER_NAME \
 		$Options \
@@ -22,11 +29,18 @@ create_master() {
 
 	echo "Creating cluster master"
 	if [ "$deploy_type" == "azure" ]; then
-		export AZURE_SIZE="Standard_A1"
-	else
+		export AZURE_SIZE="Standard_A4"
+	elif [ "$deploy_type" == "gcp" ]; then
+		export GCP_SIZE="Standard_A0"
+	elif [ "$deploy_type" == "aws" ]; then
+		export AWS_SIZE="Standard_A0"
+	elif [ "$deploy_type" == "generic" ]; then
 		ip=$1
-		ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@${ip}
+		ssh-copy-id -i ~/.ssh/id_rsa.pub $user@${ip}
 		Options="--generic-ip-address ${ip} ${Options}"
+	else
+		echo "Invalid deploy_type \"$deploy_type\"."
+		exit 1
 	fi
 
 	kvip=$(docker-machine ip $KVStore_Host)
@@ -45,11 +59,18 @@ create_worker(){
 	worker_name=$1
 	echo "Creating cluster node ${worker_name}"
 	if [ "$deploy_type" == "azure" ]; then
-		export AZURE_SIZE="Standard_A2"
-	else
+		export AZURE_SIZE="Standard_A8"
+	elif [ "$deploy_type" == "gcp" ]; then
+		export GCP_SIZE="Standard_A0"
+	elif [ "$deploy_type" == "aws" ]; then
+		export AWS_SIZE="Standard_A0"
+	elif [ "$deploy_type" == "generic" ]; then
 		ip=$2
-		ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@${ip}
+		ssh-copy-id -i ~/.ssh/id_rsa.pub $user@${ip}
 		Options="--generic-ip-address ${ip} ${Options}"
+	else
+		echo "Invalid deploy_type \"$deploy_type\"."
+		exit 1
 	fi
 
 	kvip=$(docker-machine ip $KVStore_Host)

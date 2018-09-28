@@ -10,14 +10,14 @@ docker stop clustering
 docker stop $(docker ps -f name=act_sim -aq)
 docker stop $(docker ps -f name=rec_sim -aq)
 
-docker stop reporter
+docker stop portal
 docker stop $(docker ps -f name=act_proc -aq)
 docker stop $(docker ps -f name=rec_proc -aq)
 
 docker stop $(docker ps -f name=act_store -aq)
 docker stop $(docker ps -f name=rec_store -aq)
 
-docker rm -f $(docker ps -f name=cadvisor -aq)
+docker stop $(docker ps -f name=cadvisor -aq)
 
 if [ $with_elk ] ; then
 	echo "Stopping ELK Services.."

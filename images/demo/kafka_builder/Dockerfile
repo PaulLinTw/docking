@@ -16,9 +16,10 @@ RUN rm kafka_$Scala-$Ver.tgz
 VOLUME /data
 RUN yum install -y which
 WORKDIR /usr/local/
-RUN wget http://www-eu.apache.org/dist/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz
-RUN tar xzf apache-maven-3.5.2-bin.tar.gz
-RUN ln -s apache-maven-3.5.2  maven
+ENV MAVEN_VER "3.5.4"
+RUN wget http://www-eu.apache.org/dist/maven/maven-3/$MAVEN_VER/binaries/apache-maven-$MAVEN_VER-bin.tar.gz
+RUN tar xzf apache-maven-$MAVEN_VER-bin.tar.gz
+RUN ln -s apache-maven-$MAVEN_VER  maven
 ADD maven.sh /etc/profile.d/
 RUN source /etc/profile.d/maven.sh
 WORKDIR /kafka
@@ -29,7 +30,7 @@ WORKDIR /kafka/jmx_exporter-master/
 RUN /usr/local/maven/bin/mvn package
 RUN cp jmx_prometheus_javaagent/target/jmx_prometheus_javaagent-0.2.1-SNAPSHOT.jar /kafka/
 WORKDIR /kafka
-ADD kafka-0-8-2.yml ./
 ADD *.sh ./
 ADD server.properties.* $Ver/config/
+ADD kafka-0-8-2.yml ./
 CMD ["bash"]

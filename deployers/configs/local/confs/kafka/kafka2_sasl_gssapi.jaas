@@ -1,0 +1,18 @@
+KafkaServer{
+   com.sun.security.auth.module.Krb5LoginModule required
+   useKeyTab=true
+   storeKey=true
+   useTicketCache=true
+   keyTab="/keytabs/kafka_kafka2.kt"
+   serviceName="kafka"
+   principal="kafka/kafka2";
+};
+Client{
+   com.sun.security.auth.module.Krb5LoginModule required
+   useKeyTab=true
+   storeKey=true
+   useTicketCache=true
+   keyTab="/keytabs/kafka_kafka2.kt"
+   serviceName="zk"
+   principal="kafka/kafka2";
+};

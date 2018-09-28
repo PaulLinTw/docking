@@ -1,0 +1,118 @@
+{% extends "base_site.html" %}
+
+{% block title %}實時預測{% endblock title %}
+
+{% block stylesheets %}
+  {{ super() }}
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+		<div class="page-title">
+         <div class="col-md-12">
+				<h3>活動與交易預測<br><small>{{ timerange }}</small></h3>
+         </div>
+         <div class="col-md-12">
+				<label class="control-label col-md-3 col-sm-3 col-xs-12">Country</label>
+				<label class="control-label col-md-3 col-sm-3 col-xs-12">Product</label>
+				<label class="control-label col-md-3 col-sm-3 col-xs-12">Activity</label>
+				<label class="control-label col-md-2 col-sm-2 col-xs-12">Algorithm</label>
+		  </div>
+         <div class="col-md-12">
+			<form class="form-horizontal form-label-left" action="/dashboards/predicting" method="get">
+				<div class="col-md-3 col-sm-3 col-xs-12">
+					<select class="form-control" name='country'>
+	{% for cnt in countries %}
+					  <option value="{{ cnt }}" {% if cnt==country %}selected{% endif %}>{{ cnt }}</option>
+	{% endfor %}
+					</select>
+              </div>
+				<div class="col-md-3 col-sm-3 col-xs-12">
+					<select class="form-control" name='product'>
+	{% for prd in products %}
+					  <option value="{{ prd }}" {% if prd==product %}selected{% endif %}>{{ prd }}</option>
+	{% endfor %}
+					</select>
+              </div>
+				<div class="col-md-3 col-sm-3 col-xs-12">
+					<select class="form-control" name='action'>
+	{% for act in visits %}
+					  <option value="{{ act }}" {% if act==action %}selected{% endif %}>{{ act }}</option>
+	{% endfor %}
+	{% for act in actions %}
+					  <option value="{{ act }}" {% if act==action %}selected{% endif %}>{{ act }}</option>
+	{% endfor %}
+					</select>
+              </div>
+				<div class="col-md-2 col-sm-2 col-xs-12">
+					<select class="form-control" name='algorithm'>
+					  <option value="TREE" {% if algorithm=="TREE" %}selected{% endif %}>TREE</option>
+					  <option value="LSTM" {% if algorithm=="LSTM" %}selected{% endif %}>LSTM_Seq_To_Seq</option>
+					  <option value="LSTM_Seq_To_One" {% if algorithm=="LSTM_Seq_To_One" %}selected{% endif %}>LSTM_Seq_To_One</option>
+					  <option value="MLP" {% if algorithm=="MLP" %}selected{% endif %}>MLP</option>
+					</select>
+              </div>
+				<div class="col-md-1 col-sm-1 col-xs-12">
+	            <button class="btn btn-default" type="submit">Go!</button>
+          		</div>
+			</form>
+		 </div>
+	  </div>
+{% for item in predictions %}
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+		        <div class="col-md-9" >
+                 <h3>{{ item.title|safe }}<br><small>前15分鐘平均誤差{{ item.rmse15|safe }}</small></h3>
+		        </div>
+		        <div class="col-md-3">
+			      <ul class="nav navbar-right panel_toolbox">
+			        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+			        </li>
+			        <li><a class="close-link"><i class="fa fa-close"></i></a>
+			        </li>
+			      </ul>
+		        </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content" >
+
+              <div class="row" style="border-bottom: 1px solid #E0E0E0; padding-bottom: 5px; margin-bottom: 5px;">
+                {{ item.image|safe }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+{% endfor %}
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ super()}}
+  <!-- Chart.js -->
+  <script src="{{ url_for('static', filename='vendors/Chart.js/dist/Chart.min.js') }}"></script>
+  <!-- gauge.js -->
+  <script src="{{ url_for('static', filename='vendors/gauge.js/dist/gauge.min.js') }}"></script>
+  <!-- Skycons -->
+  <script src="{{ url_for('static', filename='vendors/skycons/skycons.js') }}"></script>
+  <!-- Flot -->
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.pie.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.time.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.stack.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.resize.js') }}"></script>
+  <!-- Flot plugins -->
+  <script src="{{ url_for('static', filename='vendors/flot.orderbars/js/jquery.flot.orderBars.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/flot-spline/js/jquery.flot.spline.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/flot.curvedlines/curvedLines.js') }}"></script>
+  <!-- DateJS -->
+  <script src="{{ url_for('static', filename='vendors/DateJS/build/date.js') }}"></script>
+  <!-- JQVMap -->
+  <script src="{{ url_for('static', filename='vendors/jqvmap/dist/jquery.vmap.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/jqvmap/dist/maps/jquery.vmap.world.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendors/jqvmap/examples/js/jquery.vmap.sampledata.js') }}"></script>
+{% endblock javascripts %}

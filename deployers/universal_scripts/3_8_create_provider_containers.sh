@@ -1,6 +1,6 @@
 source ./0_common_conf.sh
 
-eval $(docker-machine env $Worker4_Host)
+eval $(docker-machine env $Worker1_Host)
 
 echo "create act_sim_China container"
 docker run -d --net=$overlay --name=act_sim_China \
@@ -27,6 +27,8 @@ docker run -d --net=$overlay --name=act_sim_Japan \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
 $registry/demo/ap:latest 	bash -c "python simulate_activity.py Japan"
 
+eval $(docker-machine env $Worker2_Host)
+
 echo "create act_sim_UK container"
 docker run -d --net=$overlay --name=act_sim_UK \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
@@ -52,7 +54,7 @@ docker run -d --net=$overlay --name=act_sim_Mexico \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
 $registry/demo/ap:latest 	bash -c "python simulate_activity.py Mexico"
 
-eval $(docker-machine env $Worker5_Host)
+eval $(docker-machine env $Worker3_Host)
 
 echo "create rec_sim_China container"
 docker run -d --net=$overlay --name=rec_sim_China \
@@ -78,6 +80,8 @@ echo "create rec_sim_Japan container"
 docker run -d --net=$overlay --name=rec_sim_Japan \
 -v /home/$user/confs/ap.conf:/ap/tester.conf \
 $registry/demo/ap:latest 	bash -c "python simulate_record.py Japan"
+
+eval $(docker-machine env $Master_Host)
 
 echo "create rec_sim_UK container"
 docker run -d --net=$overlay --name=rec_sim_UK \

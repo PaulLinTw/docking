@@ -1,0 +1,90 @@
+<div class="left_col scroll-view">
+  <div class="navbar nav_title" style="border: 0;">
+    <a href="" class="site_title"><i class="fa fa-spinner"></i> <span>藍科展示</span></a>
+  </div>
+
+  <div class="clearfix"></div>
+
+  <!-- menu profile quick info -->
+  <div class="profile clearfix">
+    <div class="profile_pic">
+      <img src="/static/images/img.jpg" alt="..." class="img-circle profile_img">
+    </div>
+    <div class="profile_info">
+      <span>歡迎，</span>
+      <h2> {{ current_user.username }} </h2>
+    </div>
+  </div>
+  <!-- /menu profile quick info -->
+
+  <br />
+
+  <!-- sidebar menu -->
+  <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+    <div class="menu_section">
+      <ul class="nav side-menu">
+        <li><a><i class="fa fa-question-circle"></i> 關於 <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li><a href="/abouts/demo">關於展示</a></li>
+            <li><a href="/abouts/service">關於服務</a></li>
+          </ul>
+        </li>
+        <li><a><i class="fa fa-dashboard"></i> 儀錶板 <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li><a href="/dashboards/ranking">實時統計</a></li>
+            <li><a href="/dashboards/worldmap">實時地圖</a></li>
+            <li><a href="/dashboards/clustering_2D">二維探索</a></li>
+            <li><a href="/dashboards/clustering_3D">三維探索</a></li>
+            <li><a href="/dashboards/predicting">實時預測</a></li>
+          </ul>
+        </li>
+        <li><a><i class="fa fa-globe"></i> 國家視角 <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+{% for country in countries %}
+            <li><a href="/countries/index?country={{ country }}"> {{ country }} </a></li>
+{% endfor %}
+          </ul>
+        </li>
+        <li><a><i class="fa fa-cubes"></i> 產品視角 <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+{% for product in products %}
+            <li><a href="/products/index?product={{ product }}"> {{ product }} </a></li>
+{% endfor %}
+          </ul>
+        </li>
+        <li><a><i class="fa fa-paw"></i> 網站視角 <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+{% for visit in visits %}
+            <li><a href="/visits/index?visit={{ visit }}"> {{ visit }} </a></li>
+{% endfor %}
+          </ul>
+        </li>
+        <li><a><i class="fa fa-shopping-cart"></i> 交易視角 <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+{% for action in actions %}
+            <li><a href="/actions/index?action={{ action }}"> {{ action }} </a></li>
+{% endfor %}
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- /sidebar menu -->
+
+  <!-- /menu footer buttons -->
+  <div class="sidebar-footer hidden-small">
+    <a data-toggle="tooltip" data-placement="top" title="Settings">
+      <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+    </a>
+    <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+      <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+    </a>
+    <a data-toggle="tooltip" data-placement="top" title="Lock">
+      <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+    </a>
+    <a data-toggle="tooltip" data-placement="top" title="Logout" href="login">
+      <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+    </a>
+  </div>
+  <!-- /menu footer buttons -->
+</div>

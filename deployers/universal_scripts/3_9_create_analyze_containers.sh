@@ -1,12 +1,12 @@
 source ./0_common_conf.sh
 
-eval $(docker-machine env $Worker4_Host)
+eval $(docker-machine env $Worker2_Host)
 echo "create clustering container"
 docker run -d --net=$overlay --name=clustering \
 -v /home/$user/confs/ap.conf:/analyze/tester.conf \
 $registry/demo/analyze:latest bash -c "python aptimer.py"
 
-eval $(docker-machine env $Worker5_Host)
+eval $(docker-machine env $Worker3_Host)
 echo "create model_creator container"
 docker run -d --net=$overlay --name=model_creator \
 -v /home/$user/confs/ap.conf:/analyze/tester.conf \

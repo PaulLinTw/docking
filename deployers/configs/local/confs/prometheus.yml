@@ -1,0 +1,67 @@
+# my global config
+global:
+  scrape_interval:     5s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 5s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+      monitor: 'codelab-monitor'
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first.rules"
+  # - "second.rules"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ['0.0.0.0:9090']
+
+  - job_name: 'kafka'
+
+    # metrics_path defaults to '/metrics'
+    #     # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ['kafka1:7071','kafka2:7071','kafka3:7071']
+
+  - job_name: 'mongodb'
+
+    # metrics_path defaults to '/metrics'
+    #     # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ['exporter1:9001','exporter2:9001','exporter3:9001']
+
+  - job_name: 'docker'
+
+    # metrics_path defaults to '/metrics'
+    #     # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ['cadvisor1:8080','cadvisor2:8080','cadvisor3:8080']
+
+
+  - job_name: 'redis'
+
+    # metrics_path defaults to '/metrics'
+    #     # scheme defaults to 'http'.
+    static_configs:
+      - targets: ['redis_exporter:9121']
+
+#  - job_name: 'hdfs'
+
+    # metrics_path defaults to '/metrics'
+    #     # scheme defaults to 'http'.
+
+#    static_configs:
+#      - targets: ['192.168.1.152:7772','192.168.1.153:7772','192.168.1.154:7772']
