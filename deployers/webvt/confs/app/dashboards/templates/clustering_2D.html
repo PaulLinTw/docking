@@ -1,0 +1,101 @@
+{% extends "base_site.html" %}
+
+{% block title %}二維探索{% endblock title %}
+
+{% block stylesheets %}
+{{ super() }}
+{% endblock stylesheets %}
+
+{% block content %}
+<script>
+function check() {
+    var x = document.getElementById("cluster");
+    if (x.key1.value==x.key2.value){
+		alert("二個參數不可相同");
+		return false;
+	}
+	else return true;
+}
+</script>
+<div class="right_col" role="main">
+	<div class="">
+		<div class="page-title">
+				<div class="col-md-12">
+					<h3>{{ Cluster2D.title|safe }}<br><small>{{ timerange }}<br>輪廓係數(silhouette)︰{{ Score }}</small></h3>
+				</div>
+        		<div class="col-md-12">
+					<form id="cluster" class="form-horizontal form-label-left" onsubmit="return check()" action="/dashboards/clustering_2D" method="get">
+						<label class="control-label col-md-1 col-sm-1 col-xs-12">Action 1</label>
+						<div class="col-md-2 col-sm-2 col-xs-12">
+							<select class="form-control" name='key1'>
+	{% for act in visits %}
+								<option value="{{ act }}" {% if act==option1 %}selected{% endif %}>{{ act }}</option>
+	{% endfor %}
+	{% for act in actions %}
+								<option value="{{ act }}" {% if act==option1 %}selected{% endif %}>{{ act }}</option>
+	{% endfor %}
+							</select>
+						</div>
+						<label class="control-label col-md-1 col-sm-1 col-xs-12">Action 2</label>
+						<div class="col-md-2 col-sm-2 col-xs-12">
+							<select class="form-control" name='key2'>
+	{% for act in visits %}
+								<option value="{{ act }}" {% if act==option2 %}selected{% endif %}>{{ act }}</option>
+	{% endfor %}
+	{% for act in actions %}
+								<option value="{{ act }}" {% if act==option2 %}selected{% endif %}>{{ act }}</option>
+	{% endfor %}
+							</select>
+						</div>
+						<label class="control-label col-md-2 col-sm-2 col-xs-12">Algorism</label>
+						<div class="col-md-2 col-sm-2 col-xs-12">
+							<select class="form-control" name='algorithm'>
+								<option value="k-mean" {% if algorithm=="k-mean" %}selected{% endif %}>K-MEAN</option>
+								<option value="CURE" {% if algorithm=="CURE" %}selected{% endif %}>CURE</option>
+								<option value="DBSCAN" {% if algorithm=="DBSCAN" %}selected{% endif %}>DBSCAN</option>
+								<option value="WaveCluster" {% if algorithm=="WaveCluster" %}selected{% endif %}>WaveCluster</option>
+							</select>
+						</div>
+						<div class="col-md-1 col-sm-1 col-xs-12">
+							<button class="btn btn-default" type="submit">Go!</button>
+						</div>
+						</div>
+					</form>
+				</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				{{ Cluster2D.image|safe }}
+			</div>
+		</div>
+
+	</div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+{{ super()}}
+<!-- Chart.js -->
+<script src="{{ url_for('static', filename='vendors/Chart.js/dist/Chart.min.js') }}"></script>
+<!-- gauge.js -->
+<script src="{{ url_for('static', filename='vendors/gauge.js/dist/gauge.min.js') }}"></script>
+<!-- Skycons -->
+<script src="{{ url_for('static', filename='vendors/skycons/skycons.js') }}"></script>
+<!-- Flot -->
+<script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.js') }}"></script>
+<script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.pie.js') }}"></script>
+<script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.time.js') }}"></script>
+<script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.stack.js') }}"></script>
+<script src="{{ url_for('static', filename='vendors/Flot/jquery.flot.resize.js') }}"></script>
+<!-- Flot plugins -->
+<script src="{{ url_for('static', filename='vendors/flot.orderbars/js/jquery.flot.orderBars.js') }}"></script>
+<script src="{{ url_for('static', filename='vendors/flot-spline/js/jquery.flot.spline.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendors/flot.curvedlines/curvedLines.js') }}"></script>
+<!-- DateJS -->
+<script src="{{ url_for('static', filename='vendors/DateJS/build/date.js') }}"></script>
+<!-- JQVMap -->
+<script src="{{ url_for('static', filename='vendors/jqvmap/dist/jquery.vmap.js') }}"></script>
+<script src="{{ url_for('static', filename='vendors/jqvmap/dist/maps/jquery.vmap.world.js') }}"></script>
+<script src="{{ url_for('static', filename='vendors/jqvmap/examples/js/jquery.vmap.sampledata.js') }}"></script>
+{% endblock javascripts %}
